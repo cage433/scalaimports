@@ -1,6 +1,11 @@
 " Maintains the state of imports in a scala file
 
-let g:classes_to_ignore = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Offset"]
+let s:classes_to_ignore = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Offset", "Nil"]
+
+function! scalaimports#state#ignore_classes(classes)
+  let s:classes_to_ignore ++= a:classes
+endfunction
+
 let g:packages_in_scope = {"scala" : 1, "java.lang" : 1, "scala.collection" : 1}
 let g:scala_predef_classes = {
       \"Set" : 1, "List" : 1, "Any" : 1, 
@@ -13,7 +18,7 @@ function! scalaimports#state#already_imported(state, class)
   if has_key(g:scala_predef_classes, a:class)
     return 1
   endif
-  if cage433utils#list_contains(g:classes_to_ignore, a:class)
+  if cage433utils#list_contains(s:classes_to_ignore, a:class)
     return 1
   endif
   for package in scalaimports#project#packages_for_class(a:class)

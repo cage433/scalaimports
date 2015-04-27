@@ -91,6 +91,52 @@ function! scalaimports#file#replace_import_lines(import_state)
 endfunction
 
 function! scalaimports#file#classes_mentioned()
+  let lines = cage433utils#lines_in_current_buffer()
+  "let lines = getbufline("Bar.scala", 1, "$")
+  "echo "Before any processing"
+  "echo len(lines)
+  let import_regex = '\v^import'
+  let lines = filter(copy(lines), "v:val !~ '".import_regex."'")
+  let package_regex = '\v^package'
+  let lines = filter(copy(lines), "v:val !~ '".package_regex."'")
+  "echo "sans imports and package"
+  "echo len(lines)
+  " Remove '//' comments
+  let comment_regex='\v//.*$'               
+  let lines = map(copy(lines), "substitute(v:val, '".comment_regex."', \"\", \"\")")
+
+  let as_one_string = join(copy(lines), "\n")
+  let literal_string_regexp = '\v"""[^"]*"""'
+  let string_regexp = '\v"[^"]*"'
+  let multiline_comment_regexp = '\v/\*((\*[^/])|[^*])*(\*/)'
+  let as_one_string = substitute(as_one_string, literal_string_regexp, "", "g")
+  let as_one_string = substitute(as_one_string, multiline_comment_regexp, "", "g")
+  let as_one_string = substitute(as_one_string, string_regexp, "", "g")
+
+  let classes ={}
+
+  let words = filter(
+    \ split(as_one_string, '\v[^A-Za-z0-9_.]+'),                
+    \ 'v:val != "."')
+  for word in words
+      if  len(split(word, '\.')) == 0
+        echo word
+        echo line
+      endif
+  endfor
+  let words = map(copy(words), 'split(v:val, ''\.'')[0]')     " Take the left of full stop - dropping constants
+                                                              " like MyClass.Constant
+  for word in words                                           " Collect terms that look like classes/objects
+    if word =~ '\v^[A-Z]\w+'                              
+      let classes[word] = 1
+    endif
+  endfor
+  let classes_mentioned = sort(keys(classes))
+  return classes_mentioned
+  "echo join(classes_mentioned, ", ")
+endfunction
+
+function! scalaimports#file#classes_mentioned_old()
   let classes ={}
   let in_comment = 0
   for line in cage433utils#lines_in_current_buffer()
