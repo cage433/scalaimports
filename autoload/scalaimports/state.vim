@@ -12,7 +12,7 @@ let g:scala_predef_classes = {
       \"Seq" : 1,
       \"Map" : 1, "Option" : 1, "Array" : 1,
       \ "Vector" : 1, "Console" : 1,
-      \ "Product" : 1}
+      \ "Product" : 1, "Either" : 1, "Left" : 1, "Right" : 1}
 
 function! scalaimports#state#already_imported(state, class) 
   if has_key(g:scala_predef_classes, a:class)

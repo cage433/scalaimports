@@ -91,25 +91,26 @@ function! scalaimports#file#replace_import_lines(import_state)
 endfunction
 
 function! scalaimports#file#classes_mentioned()
-  let lines = cage433utils#lines_in_current_buffer()
   "let lines = getbufline("Bar.scala", 1, "$")
-  "echo "Before any processing"
-  "echo len(lines)
+  let lines = cage433utils#lines_in_current_buffer()
   let import_regex = '\v^import'
   let lines = filter(copy(lines), "v:val !~ '".import_regex."'")
   let package_regex = '\v^package'
   let lines = filter(copy(lines), "v:val !~ '".package_regex."'")
-  "echo "sans imports and package"
-  "echo len(lines)
-  " Remove '//' comments
   let comment_regex='\v//.*$'               
   let lines = map(copy(lines), "substitute(v:val, '".comment_regex."', \"\", \"\")")
 
   let as_one_string = join(copy(lines), "\n")
   let literal_string_regexp = '\v"""[^"]*"""'
   let string_regexp = '\v"[^"]*"'
+  let contracting_comment_regexp1 = '\v/\*\*+'
+  let contracting_comment_regexp2 = '\v\*\*+/'
   let multiline_comment_regexp = '\v/\*((\*[^/])|[^*])*(\*/)'
   let as_one_string = substitute(as_one_string, literal_string_regexp, "", "g")
+  " replace \******* with \* - otherwise the multiline comment matcher 
+  " doesn't work. Similarly replace ******/ with just */
+  let as_one_string = substitute(as_one_string, contracting_comment_regexp1, "/*", "g")
+  let as_one_string = substitute(as_one_string, contracting_comment_regexp2, "*/", "g")
   let as_one_string = substitute(as_one_string, multiline_comment_regexp, "", "g")
   let as_one_string = substitute(as_one_string, string_regexp, "", "g")
 
