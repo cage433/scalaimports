@@ -203,7 +203,7 @@ class ExternalPackages < Packages
 
 
   def project_jar_files
-    dependency_jars = IO.readlines("maker-classpath.txt")[0].split(':').select{ |file| File.extname(file) == ".jar"}
+    dependency_jars = Dir.glob("test_lib_managed/2.11.6/*.jar")
     rt_jar = "#{ENV["JAVA_HOME"]}/jre/lib/rt.jar"
     dependency_jars << rt_jar
   end
