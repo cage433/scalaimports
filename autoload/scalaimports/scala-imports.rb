@@ -138,7 +138,7 @@ class ProjectPackages < Packages
     3000
   end
   def files_to_add()
-    source_files = Dir.glob("*/src/**/[A-Z]*.scala") + Dir.glob("*/tests/**/[A-Z]*.scala") 
+    source_files = Dir.glob("**/src/**/[A-Z]*.scala") + Dir.glob("**/tests/**/[A-Z]*.scala") 
     if File.exists?(packages_by_file_file)
       last_time = File.mtime(packages_by_file_file)
     else
