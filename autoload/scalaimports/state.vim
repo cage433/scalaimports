@@ -3,7 +3,7 @@
 let s:classes_to_ignore = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Offset", "Nil"]
 
 function! scalaimports#state#ignore_classes(classes)
-  let s:classes_to_ignore ++= a:classes
+  let s:classes_to_ignore += a:classes
 endfunction
 
 let g:packages_in_scope = {"scala" : 1, "java.lang" : 1, "scala.collection" : 1}
