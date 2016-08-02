@@ -131,7 +131,7 @@ class ProjectPackages < Packages
   end
 
   def stale_files()
-    @packages.keys.select{|file| ! File.exists?(file)}
+    @packages.keys.select{|file| ! File.exist?(file)}
   end
 
   def files_per_thread
@@ -139,7 +139,7 @@ class ProjectPackages < Packages
   end
   def files_to_add()
     source_files = Dir.glob("**/src/**/[A-Z]*.scala") + Dir.glob("**/tests/**/[A-Z]*.scala") 
-    if File.exists?(packages_by_file_file)
+    if File.exist?(packages_by_file_file)
       last_time = File.mtime(packages_by_file_file)
     else
       last_time = Time.new(0)
@@ -203,7 +203,9 @@ class ExternalPackages < Packages
 
 
   def project_jar_files
-    dependency_jars = Dir.glob("test_lib_managed/2.11.6/*.jar")
+    scala_versions = Dir.glob("test_lib_managed/*")
+    raise "[#{scala_versions}] should have a single directory" unless scala_versions.size == 1
+    dependency_jars = Dir.glob("#{scala_versions[0]}/*.jar")
     rt_jar = "#{ENV["JAVA_HOME"]}/jre/lib/rt.jar"
     dependency_jars << rt_jar
   end
