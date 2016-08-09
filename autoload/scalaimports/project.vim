@@ -1,4 +1,9 @@
 let s:this_script_dir = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+let g:known_scala_imports = {}
+
+function! scalaimports#project#extend_known_imports(dict)
+  call extend(g:known_scala_imports, a:dict)
+endfunction
 
 function! scalaimports#project#build_imports_map(imports_file)
   let imports_map = {}
@@ -35,13 +40,21 @@ function! scalaimports#project#build_imports_map_if_necessary()
   endif
 endfunction
 
+function!scalaimports#project#known_import_or_lookup(klass, dict)
+  if has_key(g:known_scala_imports, a:klass)
+    return [ get(g:known_scala_imports, a:klass) ]
+  else
+    return get(a:dict, a:klass, [])
+  endif
+endfunction
+
 function! scalaimports#project#packages_for_class(klass)
   call scalaimports#project#build_imports_map_if_necessary()
-  return get(s:scala_imports_map, a:klass, [])
+  return scalaimports#project#known_import_or_lookup(a:klass, s:scala_imports_map)
 endfunction
 
 function! scalaimports#project#source_packages_for_class(klass)
   call scalaimports#project#build_imports_map_if_necessary()
-  return get(s:source_imports_map, a:klass, [])
+  return scalaimports#project#known_import_or_lookup(a:klass, s:source_imports_map)
 endfunction
 

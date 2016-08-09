@@ -174,8 +174,8 @@ class ProjectPackages < Packages
     if !lines.empty? && package
 
       lines.each do |line|
-        if line =~ /\s*(class|trait|object)\s+([A-Z]\w+)/ then
-          class_package_pairs << [$2, package]
+        if line =~ /^((sealed|case)\s+)*(class|trait|object)\s+([A-Z]\w+)/ then
+          class_package_pairs << [$4, package]
         end
       end
     end
