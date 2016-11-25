@@ -112,7 +112,7 @@ function! scalaimports#file#classes_mentioned()
   let as_one_string = substitute(as_one_string, contracting_comment_regexp1, "/*", "g")
   let as_one_string = substitute(as_one_string, contracting_comment_regexp2, "*/", "g")
   let as_one_string = substitute(as_one_string, multiline_comment_regexp, "", "g")
-  let as_one_string = substitute(as_one_string, string_regexp, "", "g")
+  "let as_one_string = substitute(as_one_string, string_regexp, "", "g")
 
   let classes ={}
 
@@ -134,7 +134,6 @@ function! scalaimports#file#classes_mentioned()
   endfor
   let classes_mentioned = sort(keys(classes))
   return classes_mentioned
-  "echo join(classes_mentioned, ", ")
 endfunction
 
 function! scalaimports#file#classes_mentioned_old()
